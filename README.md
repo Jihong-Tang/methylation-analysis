@@ -24,5 +24,4 @@ For detailed information, check `README.md` in each sub-directories.
 
 # Author 
 Jihong Tang &lt;njutangjihong@gmail.com&gt;
-
 Instructed by @[wang-q](https://github.com/wang-q) and @[IvanWoo](https://github.com/IvanWoo22)

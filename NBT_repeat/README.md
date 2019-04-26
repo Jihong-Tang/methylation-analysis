@@ -4,7 +4,7 @@
 - [Name](#name)
 - [Purpose](#purpose)
 - [Data downloading](#data-downloading)
-    - [Secquencing data](##sequencing-data)
+    - [Sequencing data](##sequencing-data)
     - [Reference genome data](##reference-genome-data)
 - [Quality control](#quality-control)
 - [Methylation analysis](#methylation-analysis)
@@ -25,7 +25,7 @@
 * All data are downloaded via FTP address by a lightweight downloading tool [aria2](https://aria2.github.io/)
 * Detailed information about data downloading ==> [Blog](https://www.jianshu.com/u/3fcc93cd84c1)
 
-## Scequencing data
+## Sequencing data
 Open browser, vist [EBI-ENA search page](https://www.ebi.ac.uk/ena) and search for the GEO accession. On the [result page](https://www.ebi.ac.uk/ena/data/view/PRJNA476795), we could get the expected FTP address.
 
 ```bash
@@ -54,6 +54,7 @@ aria2c -d ./ -Z ftp://ftp.ensembl.org/pub/release-96/fasta/mus_musculus/dna/Mus_
 sh $HOME/Scripts/shell/genome_data_download.sh $HOME/NBT_repeat/data/genome_data/
 ```
 # Quality control
+
 
 # Methylation analysis
 

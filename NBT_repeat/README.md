@@ -60,6 +60,7 @@ sh $HOME/Scripts/shell/genome_data_download.sh $HOME/NBT_repeat/data/genome_data
 # Downstream analysis
 
 # Reference
+* [Aria2 Manual](https://aria2.github.io/manual/en/html/index.html)
 
 # Author 
 Jihong Tang &lt;njutangjihong@gmail.com&gt;

@@ -14,7 +14,8 @@
 5hmC finding procedure - bioinfo procedures of finding the 5hmC DMLs in mouse samples based on the ACE-seq data coming from [pushlished paper](https://www.nature.com/articles/nbt.4204).
 
 # Purpose
-
+* Learn the methylation data analysis procedure based on [`bismark`](https://github.com/FelixKrueger/Bismark) and [`DSS`](http://bioconductor.org/packages/release/bioc/html/DSS.html) package.
+* Get familiar with the Linux sever workspace and 
 # Data downloading
 
 # Quality control

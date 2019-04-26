@@ -3,7 +3,11 @@
 # Table of Contents
 - [Name](#name)
 - [Purpose](#purpose)
-
+- [Data downloading](#data-downloading)
+- [Quality control](#quality-control)
+- [Methylation analysis](#methylation-analysis)
+- [Downstream analysis](#downstream-analysis)
+- [Reference](#reference)
 - [Author](#author)
 
 # Name
@@ -18,6 +22,8 @@
 # Methylation analysis
 
 # Downstream analysis
+
+# Reference
 
 # Author 
 Jihong Tang &lt;njutangjihong@gmail.com&gt;

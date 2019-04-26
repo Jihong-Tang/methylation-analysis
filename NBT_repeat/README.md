@@ -11,5 +11,13 @@
 
 # Purpose
 
+# Data downloading
+
+# Quality control
+
+# Methylation analysis
+
+# Downstream analysis
+
 # Author 
-Jihong Tang
+Jihong Tang &lt;njutangjihong@gmail.com&gt;

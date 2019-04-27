@@ -24,9 +24,12 @@
 * The Mus musculus reference genome data is downloaded from [Ensembl](https://www.ensembl.org/info/data/ftp/index.html)
 * All data are downloaded via FTP address by a lightweight downloading tool [aria2](https://aria2.github.io/)
 * Detailed information about data downloading ==> [Blog](https://www.jianshu.com/u/3fcc93cd84c1)
-
+* Data used in this sample procedure:
+    - Wild type: SRR7368841 & SRR7368842
+    - TetTKO type: SRR7368845
+    
 ## Sequencing data
-Open browser, vist [EBI-ENA search page](https://www.ebi.ac.uk/ena) and search for the GEO accession. On the [result page](https://www.ebi.ac.uk/ena/data/view/PRJNA476795), we could get the expected FTP address. Use `aria2` to download the data and we could get `.fq.gz` files.
+Open browser, vist [EBI-ENA search page](https://www.ebi.ac.uk/ena) and search for the GEO accession. On the [result page](https://www.ebi.ac.uk/ena/data/view/PRJNA476795), we could get the expected FTP address. Use `aria2` to download the data and we could get `.fastq.gz` files.
 
 ```bash
 mkdir -p $HOME/NBT_repeat/data/seq_data/WT_mESC_rep1
@@ -63,11 +66,11 @@ Here, we use [FastQc](www.bioinformatics.babraham.ac.uk/projects/fastqc/) and [T
 cd $HOME/NBT_repeat/data/seq_data/
 
 # quality control to see the quality of the raw seq-data
-fastqc --threads 3 ./WT_mESC_rep1/*.fq.gz ./TetTKO_mESC_rep1/*.fq.gz
+fastqc --threads 3 ./WT_mESC_rep1/*.fastq.gz ./TetTKO_mESC_rep1/*.fastq.gz
 
 # quality and adapter trimming, followd by fastqc operation
-trim_galore -o ./WT_mESC_rep1/trimmed_data/ --fastqc ./WT_mESC_rep1/*.fq.gz
-trim_galore -o ./TetTKO_mESC_rep1/trimmed_data/ --fastqc ./TetTKO_mESC_rep1/*.fq.gz
+trim_galore -o ./WT_mESC_rep1/trimmed_data/ --fastqc ./WT_mESC_rep1/*.fastq.gz
+trim_galore -o ./TetTKO_mESC_rep1/trimmed_data/ --fastqc ./TetTKO_mESC_rep1/*.fastq.gz
 ```
 
 `FastQc` used options:

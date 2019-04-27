@@ -229,7 +229,53 @@ Rscript $HOME/Scrpits/R/bismark_result_transfer.R ./WT_data/SRX4241790_methylati
 After the input data preparation, we could use `DSS` package to find DMLs or DMRs. The detailed result files of both DML and DMR detection could be found in the sub-directory [`methylation-differential-analysis-reports/`](methylation-differential-analysis-reports/).
 
 ```bash
+cd $HOME/NBT_repeat/R_analysis/
 
+# basic command line procedure
+R
+```
+```r
+library(tidyr)
+library(dplyr)
+library(DSS)
+
+first_file <- "./WT_data/SRX4241790_methylation_result.txt"
+second_file <- "./TetTKO_data/SRR7368845_methylation_result.txt"
+file_prefix <- "mm_all_chr"
+file_save_path <- "./"
+
+# import data
+first_raw_data <- read.table(first_file, header = T, stringsAsFactors = F)
+second_raw_data <- read.table(second_file, header = T, stringsAsFactors = F)
+
+# data manipulation to prepare for the BSseq objection
+DSS_first_input_data <- first_raw_data %>%
+	mutate(chr = paste("chr", chr, sep = "")) %>%
+	mutate(pos = start, N = methyled + unmethyled, X = methyled) %>%
+	select(chr, pos, N, X)
+DSS_second_input_data <- second_raw_data %>%
+	mutate(chr = paste("chr", chr, sep = "")) %>%
+	mutate(pos = start, N = methyled + unmethyled, X = methyled) %>%
+	select(chr, pos, N, X)
+
+# create BSseq objection and make the statical test
+bsobj <- makeBSseqData(list(DSS_first_input_data, DSS_second_input_data), c("S1", "S2"))
+dmlTest <- DMLtest(bsobj, group1 = c("S1"), group2 = c("S2"), smoothing = T)
+
+# dmls detection
+dmls <- callDML(dmlTest, p.threshold = 0.001)
+# dmrs detection
+dmrs <- callDMR(dmlTest, p.threshold=0.01)
+
+# output the results
+write.table(dmlTest, paste(file_save_path, file_prefix, "_DSS_test_result.txt", sep = ""), row.names = F)
+write.table(dmls, paste(file_save_path, file_prefix, "_DSS_dmls_result.txt", sep = ""), row.names = F)
+write.table(dmrs, paste(file_save_path, file_prefix, "_DSS_dmrs_result.txt", sep = ""), row.names = F)
+```
+
+```bash
+# Rscript procedure
+Rscript $HOME/Scripts/R/DSS_differ_analysis.R ./WT_data/SRX4241790_methylation_result.txt ./TetTKO_data/SRR7368845_methylation_result.txt mm_chr_all ./
 ```
 # Reference
 * [Aria2 Manual](https://aria2.github.io/manual/en/html/index.html)

@@ -258,7 +258,7 @@ DSS_second_input_data <- second_raw_data %>%
 	mutate(pos = start, N = methyled + unmethyled, X = methyled) %>%
 	select(chr, pos, N, X)
 
-# create BSseq objection and make the statical test
+# create BSseq object and make the statical test
 bsobj <- makeBSseqData(list(DSS_first_input_data, DSS_second_input_data), c("S1", "S2"))
 dmlTest <- DMLtest(bsobj, group1 = c("S1"), group2 = c("S2"), smoothing = T)
 

@@ -8,6 +8,10 @@
     - [Reference genome data](##reference-genome-data)
 - [Quality control and trimming](#quality-control-and-trimming)
 - [Methylation analysis](#methylation-analysis)
+    - [Genome indexing](##genome-indexing)
+    - [Read alignment](##read-alignment)
+    - [Aligned reads deduplication](##aligned-reads-deduplication)
+    - [Methylation information extracting](##methylation-information-extracting)
 - [Downstream analysis](#downstream-analysis)
 - [Reference](#reference)
 - [Author](#author)
@@ -60,7 +64,7 @@ sh $HOME/Scripts/shell/genome_data_download.sh $HOME/NBT_repeat/data/genome_data
 Performing some quality control is highly recommended for all high throughput sequencing to tell straight whether the dataset is of good quality or whether there
 were any fundamental problems with either the library or the sequencing itself.
 
-Here, we use [FastQc](www.bioinformatics.babraham.ac.uk/projects/fastqc/) and [Trim Galore](www.bioinformatics.babraham.ac.uk/projects/trim_galore/) to do the quality control and adapter trimming respectively. Trimming reports could be found in subdirectory [`\trimming-reports`](\trimming-reports).
+Here, we use [FastQc](www.bioinformatics.babraham.ac.uk/projects/fastqc/) and [Trim Galore](www.bioinformatics.babraham.ac.uk/projects/trim_galore/) to do the quality control and adapter trimming respectively. Trimming reports could be found in sub-directory [`trimming-reports/`](trimming-reports/).
 
 ```bash
 cd $HOME/NBT_repeat/data/seq_data/
@@ -94,7 +98,7 @@ bismark_genome_preparation --bowtie2 $HOME/NBT_repeat/data/genome_data/
 * `--bowtie2`: This will create bisulfite indexes for Bowtie 2. (Default: ON).
 
 ## Read alignment
-The core of the methylation data analysis procedure is to align the sequencing reads to the reference genome, and it is assumed that all data have been quality and adapter trimmed. 
+The core of the methylation data analysis procedure is to align the sequencing reads to the reference genome, and it is assumed that all data have been quality and adapter trimmed. The alignment reports could be found in sub-directory [`bismark-alignment-reports/`](bismark-alignment-reports/).
 
 ```bash
 genome_path="$HOME/NBT_repeat/data/genome_data/"
@@ -107,6 +111,16 @@ bismark -o ./TetTKO_mEC_rep1/bismark_result/ --parallel 4 --genoem_folder ${geno
 # merge the two WT_mESC_rep1 result .bam file
 samtools cat -o SRX4241790_trimmed_bismark_bt2.bam ./WT_mESC_rep1/bismark_result/*.bam
 ```
+
+`bismark` used options:
+* `-o/--output_dir <dir>`: Write all output files into this directory. By default the output files will be written into the same folder as the input file(s). If the specified folder does not exist, Bismark will attempt to create it first.
+* `--parallel <int>`: (May also be `--multicore <int>`) Sets the number of parallel instances of Bismark to be run concurrently. This forks the Bismark alignment step very early on so that each individual Spawn of Bismark processes only every n-th sequence (n being set by --parallel).
+* `--genome_folder`: **Arguments**, The path to the folder containing the unmodified reference genome as well as the subfolders created by the `bismark_genome_preparation` script.
+
+`samtools` used command and options:
+* `cat`: **Command** concatenate BAMs
+    - `-o`: output file format
+
 ## Aligned reads deduplication
 
 ## Methylation information extracting

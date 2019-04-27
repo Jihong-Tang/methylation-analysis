@@ -60,7 +60,7 @@ sh $HOME/Scripts/shell/genome_data_download.sh $HOME/NBT_repeat/data/genome_data
 Performing some quality control is highly recommended for all high throughput sequencing to tell straight whether the dataset is of good quality or whether there
 were any fundamental problems with either the library or the sequencing itself.
 
-Here, we use [FastQc](www.bioinformatics.babraham.ac.uk/projects/fastqc/) and [Trim Galore](www.bioinformatics.babraham.ac.uk/projects/trim_galore/) to do the quality control and adapter trimming respectively.
+Here, we use [FastQc](www.bioinformatics.babraham.ac.uk/projects/fastqc/) and [Trim Galore](www.bioinformatics.babraham.ac.uk/projects/trim_galore/) to do the quality control and adapter trimming respectively. Trimming reports could be found in subdirectory [`\trimming-reports`](\trimming-reports).
 
 ```bash
 cd $HOME/NBT_repeat/data/seq_data/
@@ -81,6 +81,36 @@ trim_galore -o ./TetTKO_mESC_rep1/trimmed_data/ --fastqc ./TetTKO_mESC_rep1/*.fa
 * `--fastqc`: Run FastQC in the default mode on the FastQ file once trimming is complete.
 
 # Methylation analysis
+After the quality control and adapter trimming, BS-seq data analysis protocal based on [Bismark](https://www.bioinformatics.babraham.ac.uk/projects/bismark/) could be followed to do the methylation analysis for the ACE-seq data as well.
+
+## Genome indexing 
+Before alignments can be carried out, the genome of interest needs to be bisulfite converted *in-silico* and indexed. Based on `Bismark`, we can use both `Bowtie` and `Bowtie2` to do the indexing work.
+
+```bash
+bismark_genome_preparation --bowtie2 $HOME/NBT_repeat/data/genome_data/
+```
+
+`bismark_genome_preparation` used options:
+* `--bowtie2`: This will create bisulfite indexes for Bowtie 2. (Default: ON).
+
+## Read alignment
+The core of the methylation data analysis procedure is to align the sequencing reads to the reference genome, and it is assumed that all data have been quality and adapter trimmed. 
+
+```bash
+genome_path="$HOME/NBT_repeat/data/genome_data/"
+cd $HOME/NBT_repeat/data/seq_data/
+
+# read alignment
+bismark -o ./WT_mESC_rep1/bismark_result/ --parallel 4 --genome_folder ${genome_path} ./WT_mESC_rep1/*.fq.gz
+bismark -o ./TetTKO_mEC_rep1/bismark_result/ --parallel 4 --genoem_folder ${genome_path} ./TetTKO_mESC_rep1/*fq.gz
+
+# merge the two WT_mESC_rep1 result .bam file
+samtools cat -o SRX4241790_trimmed_bismark_bt2.bam ./WT_mESC_rep1/bismark_result/*.bam
+```
+## Aligned reads deduplication
+
+## Methylation information extracting
+
 
 # Downstream analysis
 

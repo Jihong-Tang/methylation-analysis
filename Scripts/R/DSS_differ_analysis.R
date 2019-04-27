@@ -1,8 +1,12 @@
-#
+# The script is used to make the methylation differential analysis based on R package DSS. The transfered data of two different samples should be provided.
 
-#Argument: Command argument:[1]First sample: the path of the bismark result .txt file which transformed from the .cov file [2] Second sample: the same path format [3] The prefix of the name of the result name [4] The path of the file saving
-#Author: Jihong Tang
-#Date: April 25, 2019
+# Argument: 
+# Command argument:[1]First sample: the path of the bismark result .txt file which transformed from the .cov file 
+# [2] Second sample: the same path format 
+# [3] The prefix of the name of the result name 
+# [4] The path of the file saving
+# Author: Jihong Tang
+# Date: April 25, 2019
 
 library(tidyr)
 library(dplyr)

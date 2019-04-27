@@ -4,14 +4,14 @@
 - [Name](#name)
 - [Purpose](#purpose)
 - [Data downloading](#data-downloading)
-    - [Sequencing data](##sequencing-data)
-    - [Reference genome data](##reference-genome-data)
+    - [Sequencing data](#sequencing-data)
+    - [Reference genome data](#reference-genome-data)
 - [Quality control and trimming](#quality-control-and-trimming)
 - [Methylation analysis](#methylation-analysis)
-    - [Genome indexing](##genome-indexing)
-    - [Read alignment](##read-alignment)
-    - [Aligned reads deduplication](##aligned-reads-deduplication)
-    - [Methylation information extracting](##methylation-information-extracting)
+    - [Genome indexing](#genome-indexing)
+    - [Read alignment](#read-alignment)
+    - [Aligned reads deduplication](#aligned-reads-deduplication)
+    - [Methylation information extracting](#methylation-information-extracting)
 - [Downstream analysis](#downstream-analysis)
 - [Reference](#reference)
 - [Author](#author)
@@ -169,9 +169,72 @@ bismark_methylation_extractor --single-end --gzip --parallel 4 --bedGraph \
 * `-o/ --output`: Allows specification of a different output directory (absolute or relative path). If not specified explicitly, the output will be written to the current directory.
 
 # Downstream analysis
+Based on the methylation information result got from the methylation analysis procedure, we could make some basic downstream analysis work including finding specific locus and detecting differential methylation loci (DML) or differential methylation regions (DMR). Here we use R package [`DSS`](http://bioconductor.org/packages/release/bioc/html/DSS.html) to make the differential methylation analysis.
 
+## Input data preparation
+`DSS` requires data from each BS-seq like experiment to be summarized into following information for each CG position: chromosome number, genomic coordinate, total number of reads, and number of reads showing methylation. 
+
+The required input data could be transfered from the bismark result `.cov` file since the count file contain following columns: chr, start, end, methylation%,
+count methylated, count unmethylated.
+
+```bash
+mkdir -p $HOME/NBT_repeat/R_analysis/WT_data
+mkdir -p $HOME/NBT_repeat/R_analysis/TetTKO_data
+cd $HOME/NBT_repeat/R_analysis/
+# store the file path information
+file_WT_path="$HOME/NBT_repeat/data/seq_data/WT_mESC_rep1/deduplicated_result/SRX4241790_trimmed_bismark_bt2.deduplicated.bismark.cov.gz"
+file_TetTKO_path="$HOME/NBT_repeat/data/seq_data/TetTKO_mESC_rep1/deduplicated_result/SRR7368845_trimmed_bismark_bt2.deduplicated.bismark.cov.gz"
+# copy the result file to the R analysis folder
+cp file_WT_path ./WT_data/
+cp file_TetTKO_path ./TetTKO_data/
+# unzip
+gunzip -d ./WT_data/SRX4241790_trimmed_bismark_bt2.deduplicated.bismark.cov.gz
+gunzip -d ./TetTKO_data/SRR7368845_trimmed_bismark_bt2.deduplicated.bismark.cov.gz
+# transfer the .cov file to .txt file
+cp ./WT_data/SRX4241790_trimmed_bismark_bt2.deduplicated.bismark.cov ./WT_data/SRX4241790_methylation_result.txt
+cp ./TetTKO_data/SRR7368845_trimmed_bismark_bt2.deduplicated.bismark.cov ./TetTKO_data/SRR7368845_methylation_result.txt
+
+# basic command line environment procedure 
+R
+```
+```r
+library(tidyr)
+library(dplyr)
+
+file_names <- c("./WT_data/SRX4241790_methylation_result.txt", "./TetTKO_data/SRR7368845_methylation_result.txt")
+
+func_read_file <- function(file_name){
+	dir_vec <- strsplit(file_name, split = "/")[[1]]
+	len <- length(dir_vec)
+	file_prefix = substring(dir_vec[len], 0, nchar(dir_vec[len]) - 4)
+	file_save_path = substring(file_name, 0, nchar(file_name) - nchar(dir_vec[len]))
+	print(paste("File", file_name, "is being importing and this may take a while..."), sep = "")
+	rawdata_df <- read.table(file_name, header = F, stringsAsFactors = F)
+	print("Importing file is finished!")
+	colnames(rawdata_df) <- c("chr", "start", "end", "methyl%", "methyled", "unmethyled")
+	write.table(rawdata_df, paste(file_save_path, file_prefix, "_transfered.txt", sep = ""), row.names = F )
+}
+
+lapply(file_names, func_read_file)
+
+q()
+```
+
+```bash
+# Rscript procedure
+Rscript $HOME/Scrpits/R/bismark_result_transfer.R ./WT_data/SRX4241790_methylation_result.txt ./TetTKO_data/SRR7368845_methylation_result.txt
+```
+
+## DML/DMR detection
+After the input data preparation, we could use `DSS` package to find DMLs or DMRs. The detailed result files of both DML and DMR detection could be found in the sub-directory [`methylation-differential-analysis-reports/`](methylation-differential-analysis-reports/).
+
+```bash
+
+```
 # Reference
 * [Aria2 Manual](https://aria2.github.io/manual/en/html/index.html)
+* [Bismark User Guide](https://rawgit.com/FelixKrueger/Bismark/master/Docs/Bismark_User_Guide.html)
+* [DSS package Manual](http://bioconductor.org/packages/release/bioc/vignettes/DSS/inst/doc/DSS.pdf)
 
 # Author 
 Jihong Tang &lt;njutangjihong@gmail.com&gt;

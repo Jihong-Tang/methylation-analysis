@@ -6,7 +6,7 @@
 - [Data downloading](#data-downloading)
     - [Sequencing data](##sequencing-data)
     - [Reference genome data](##reference-genome-data)
-- [Quality control](#quality-control)
+- [Quality control and trimming](#quality-control-and-trimming)
 - [Methylation analysis](#methylation-analysis)
 - [Downstream analysis](#downstream-analysis)
 - [Reference](#reference)
@@ -26,7 +26,7 @@
 * Detailed information about data downloading ==> [Blog](https://www.jianshu.com/u/3fcc93cd84c1)
 
 ## Sequencing data
-Open browser, vist [EBI-ENA search page](https://www.ebi.ac.uk/ena) and search for the GEO accession. On the [result page](https://www.ebi.ac.uk/ena/data/view/PRJNA476795), we could get the expected FTP address.
+Open browser, vist [EBI-ENA search page](https://www.ebi.ac.uk/ena) and search for the GEO accession. On the [result page](https://www.ebi.ac.uk/ena/data/view/PRJNA476795), we could get the expected FTP address. Use `aria2` to download the data and we could get `.fq.gz` files.
 
 ```bash
 mkdir -p $HOME/NBT_repeat/data/seq_data/WT_mESC_rep1
@@ -34,7 +34,7 @@ mkdir -p $HOME/NBT_repeat/data/seq_data/TetTKO_mESC_rep1
 cd $HOME/NBT_repeat/data/seq_data/
 
 aria2c -d ./WT_mESC_rep1/ -Z ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR736/001/SRR7368841/SRR7368841.fastq.gz ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR736/002/SRR7368842/SRR7368842.fastq.gz
-aria2c -d ./TetTKO_mESC_rep1 -Z ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR736/005/SRR7368845/SRR7368845.fastq.gz
+aria2c -d ./TetTKO_mESC_rep1/ -Z ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR736/005/SRR7368845/SRR7368845.fastq.gz
 ```
 ## Reference genome data 
 Open browser, visit [ensembl download page](https://www.ensembl.org/info/data/ftp/index.html), and find the DNA `.fasta` file. On the [result page](ftp://ftp.ensembl.org/pub/release-96/fasta/mus_musculus/dna/), we could get the expected FTP address.
@@ -53,8 +53,29 @@ aria2c -d ./ -Z ftp://ftp.ensembl.org/pub/release-96/fasta/mus_musculus/dna/Mus_
 # Alternative option: script download
 sh $HOME/Scripts/shell/genome_data_download.sh $HOME/NBT_repeat/data/genome_data/
 ```
-# Quality control
+# Quality control and trimming
+Performing some quality control is highly recommended for all high throughput sequencing to tell straight whether the dataset is of good quality or whether there
+were any fundamental problems with either the library or the sequencing itself.
 
+Here, we use [FastQc](www.bioinformatics.babraham.ac.uk/projects/fastqc/) and [Trim Galore](www.bioinformatics.babraham.ac.uk/projects/trim_galore/) to do the quality control and adapter trimming respectively.
+
+```bash
+cd $HOME/NBT_repeat/data/seq_data/
+
+# quality control to see the quality of the raw seq-data
+fastqc --threads 3 ./WT_mESC_rep1/*.fq.gz ./TetTKO_mESC_rep1/*.fq.gz
+
+# quality and adapter trimming, followd by fastqc operation
+trim_galore -o ./WT_mESC_rep1/trimmed_data/ --fastqc ./WT_mESC_rep1/*.fq.gz
+trim_galore -o ./TetTKO_mESC_rep1/trimmed_data/ --fastqc ./TetTKO_mESC_rep1/*.fq.gz
+```
+
+`FastQc` used options:
+* `-t/--threads <int>`: Specifies the number of files which can be processed simultaneously.
+
+`Trim Galore` used options:
+* `-o/--output_dir <DIR>`: If specified all output will be written to this directory instead of the current directory. If the directory doesn't exist it will be created for you.  
+* `--fastqc`: Run FastQC in the default mode on the FastQ file once trimming is complete.
 
 # Methylation analysis
 

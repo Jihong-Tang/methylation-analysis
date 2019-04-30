@@ -19,7 +19,7 @@ For detailed information, check `README.md` in each sub-directories.
 
 # Directory organization
 * [`NBT_repeat/`](NBT_repeat/): get famaliar with the basic bioinfo methylation analysis procedure via repeating the published Nature Biotechnology paper:[Nondestructive, base-resolution sequencing of 5-hydroxymethylcytosine using a DNA deaminase](https://www.nature.com/articles/nbt.4204).
-* [`Scripts`](Scripts/):  written scripts used to facilitate the analysis procedure
+* [`Scripts/`](Scripts/):  written scripts used to facilitate the analysis procedure
 
 
 

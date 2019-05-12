@@ -1,18 +1,22 @@
 [TOC levels=1-3]: #
 
 # Table of Contents
+- [Table of Contents](#table-of-contents)
 - [Name](#name)
 - [Purpose](#purpose)
 - [Data downloading](#data-downloading)
-    - [Sequencing data](#sequencing-data)
-    - [Reference genome data](#reference-genome-data)
+	- [Sequencing data](#sequencing-data)
+	- [Reference genome data](#reference-genome-data)
 - [Quality control and trimming](#quality-control-and-trimming)
 - [Methylation analysis](#methylation-analysis)
-    - [Genome indexing](#genome-indexing)
-    - [Read alignment](#read-alignment)
-    - [Aligned reads deduplication](#aligned-reads-deduplication)
-    - [Methylation information extracting](#methylation-information-extracting)
+	- [Genome indexing](#genome-indexing)
+	- [Read alignment](#read-alignment)
+	- [Aligned reads deduplication](#aligned-reads-deduplication)
+	- [Methylation information extracting](#methylation-information-extracting)
 - [Downstream analysis](#downstream-analysis)
+	- [Input data preparation](#input-data-preparation)
+	- [DML/DMR detection](#dmldmr-detection)
+- [Practical methylation information analysis](#practical-methylation-information-analysis)
 - [Reference](#reference)
 - [Author](#author)
 
@@ -277,6 +281,11 @@ write.table(dmrs, paste(file_save_path, file_prefix, "_DSS_dmrs_result.txt", sep
 # Rscript procedure
 Rscript $HOME/Scripts/R/DSS_differ_analysis.R ./WT_data/SRX4241790_methylation_result.txt ./TetTKO_data/SRR7368845_methylation_result.txt mm_chr_all ./
 ```
+
+# Practical methylation information analysis
+Here we present a simple method to take advantage of the methylation information we got from the orthodox methylation analysis procedure.
+
+
 # Reference
 * [Aria2 Manual](https://aria2.github.io/manual/en/html/index.html)
 * [Bismark User Guide](https://rawgit.com/FelixKrueger/Bismark/master/Docs/Bismark_User_Guide.html)
